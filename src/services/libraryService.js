@@ -1,6 +1,7 @@
 const bookRepository = require('../repositories/bookRepository');
 const memberRepository = require('../repositories/memberRepository');
 const borrowingRepository = require('../repositories/borrowingRepository');
+const { differenceInDays, addDays } = require('date-fns');
 
 class LibraryService {
     async borrowBook(memberCode, bookCode) {
@@ -13,12 +14,14 @@ class LibraryService {
         if (activeBorrowings.length >= 2) {
             throw new Error('Member cannot borrow more than 2 books');
         }
+        if (member.penaltyEndDate && member.penaltyEndDate > new Date()) {
+            throw new Error('Member has a penalty, cannot borrow book');
+        }
 
         const activeBorrowing = await borrowingRepository.findActiveByBookId(bookCode);
         if (activeBorrowing) {
             throw new Error('Book is already borrowed by another member');
         }
-
         const book = await bookRepository.findByCode(bookCode);
         if (!book || book.stock <= 0) {
             throw new Error('Book is not available');
@@ -59,11 +62,11 @@ class LibraryService {
 
         const borrowedAt = new Date(borrowing.borrowedAt);
         const now = new Date();
-        const diffTime = Math.abs(now - borrowedAt);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = differenceInDays(now, borrowedAt);
 
         if (diffDays > 7) {
-            member.penaltyEndDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days penalty
+            const penaltyEndDate = addDays(now, 3);
+            member.penaltyEndDate = penaltyEndDate;
             await memberRepository.update(member);
         }
 

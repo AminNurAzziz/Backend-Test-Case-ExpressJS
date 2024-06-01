@@ -1,21 +1,11 @@
 const Borrowing = require('../models/Borrowing');
 
 class BorrowingRepository {
+
     async findAll() {
-        return Borrowing.find({}).populate('member book');
+        return Borrowing.find();
     }
 
-    async findActiveByMemberId(memberId) {
-        return Borrowing.find({ member: memberId, returnedAt: null }).populate('book');
-    }
-
-    async findActiveByBookId(bookId) {
-        return Borrowing.findOne({ book: bookId, returnedAt: null }).populate('member');
-    }
-
-    async findById(id) {
-        return Borrowing.findById(id).populate('member book');
-    }
 
     async save(borrowing) {
         return borrowing.save();
@@ -23,6 +13,18 @@ class BorrowingRepository {
 
     async update(borrowing) {
         return Borrowing.findByIdAndUpdate(borrowing._id, borrowing, { new: true });
+    }
+
+    async findActiveByMemberId(memberId) {
+        return Borrowing.find({ member: memberId, returnedAt: { $exists: false } });
+    }
+
+    async findActiveByBookCode(bookCode) {
+        return Borrowing.findOne({ book: bookCode, returnedAt: { $exists: false } });
+    }
+
+    async findActiveByMemberAndBook(memberId, bookCode) {
+        return Borrowing.findOne({ member: memberId, book: bookCode, returnedAt: { $exists: false } });
     }
 }
 

@@ -5,8 +5,7 @@ const borrowingSchema = new mongoose.Schema({
     book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
     borrowedAt: { type: Date, default: Date.now },
     returnedAt: Date,
-    status: { type: String, default: 'borrowed' },
-    penalty: { type: Number, default: 0 },
+    status: { type: String, default: 'borrowed' }
 });
 
 module.exports = mongoose.model('Borrowing', borrowingSchema);

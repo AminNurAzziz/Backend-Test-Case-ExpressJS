@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: Library System API
+  version: 1.0.0
+paths:
+  /members:
+    get:
+      summary: Retrieve all members
+      tags:
+        - Members
+      responses:
+        '200':
+          description: A list of members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
+    post:
+      summary: Create a new member
+      tags:
+        - Members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMember'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '400':
+          description: Bad request
+
+  /members/{code}:
+    get:
+      summary: Retrieve a specific member by code
+      tags:
+        - Members
+      parameters:
+        - in: path
+          name: code
+          required: true
+          description: Code of the member to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '404':
+          description: Member not found
+
+    put:
+      summary: Update a member
+      tags:
+        - Members
+      parameters:
+        - in: path
+          name: code
+          required: true
+          description: Code of the member to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Member'
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '404':
+          description: Member not found
+        '400':
+          description: Bad request
+
+    delete:
+      summary: Delete a member
+      tags:
+        - Members
+      parameters:
+        - in: path
+          name: code
+          required: true
+          description: Code of the member to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Member deleted successfully
+        '404':
+          description: Member not found
+
+components:
+  schemas:
+    Member:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        borrowingQuantity:
+          type: integer
+          format: int32
+    NewMember:
+      type: object
+      properties:
+        name:
+          type: string

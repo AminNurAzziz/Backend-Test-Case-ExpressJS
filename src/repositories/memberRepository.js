@@ -1,20 +1,24 @@
 const Member = require('../models/Member');
 
 class MemberRepository {
+    async save(member) {
+        return member.save();
+    }
+
     async findAll() {
-        return Member.find({});
+        return Member.find();
     }
 
     async findByCode(code) {
         return Member.findOne({ code });
     }
 
-    async save(member) {
-        return member.save();
+    async update(member) {
+        return Member.findByIdAndUpdate(member._id, member, { new: true });
     }
 
-    async update(member) {
-        return Member.findOneAndUpdate({ code: member.code }, member, { new: true });
+    async delete(id) {
+        return Member.findByIdAndDelete(id);
     }
 }
 
