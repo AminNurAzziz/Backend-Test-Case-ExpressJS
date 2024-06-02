@@ -8,7 +8,7 @@
 
 ## Swagger UI
 
-Swagger UI is available at [http://localhost:3000/api-docs](http://localhost:3000/api-docs).
+Swagger UI is available at [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
 ## Entities
 
