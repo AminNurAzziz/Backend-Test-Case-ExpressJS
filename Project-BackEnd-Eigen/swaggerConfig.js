@@ -5,7 +5,8 @@ const options = {
         info: {
             title: 'Library System API',
             version: '1.0.0',
-            description: 'API documentation for Library System',
+            description: 'API documentation for Library System\n\n' +
+                'You are in development mode, so you can test the API without authentication.\n'
         },
         servers: [
             {

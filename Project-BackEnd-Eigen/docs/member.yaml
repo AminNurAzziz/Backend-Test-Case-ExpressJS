@@ -5,7 +5,7 @@ info:
 paths:
   /members:
     get:
-      summary: Get all members
+      summary: Shows all existing members and their borrowing quantity
       tags:
         - Members
       responses:

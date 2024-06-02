@@ -5,7 +5,7 @@ info:
 paths:
   /books:
     get:
-      summary: Retrieve all books
+      summary: Shows all existing books and quantities
       tags:
         - Books
       responses:

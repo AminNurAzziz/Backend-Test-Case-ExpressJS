@@ -31,11 +31,11 @@ class AuthService {
     }
 
     static generateToken(userId) {
-        return jwt.sign({ id: userId }, 'your_jwt_secret', { expiresIn: '30d' });
+        return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '1d' });
     }
 
     static verifyToken(token) {
-        return jwt.verify(token, 'your_jwt_secret');
+        return jwt.verify(token, process.env.JWT_SECRET);
     }
 }
 
