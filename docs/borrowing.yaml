@@ -13,21 +13,26 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                memberCode:
-                  type: string
-                bookCode:
-                  type: string
+              $ref: '#/components/schemas/BorrowRequest'
       responses:
-        '201':
+        '200':
           description: Book borrowed successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Borrowing'
+                $ref: '#/components/schemas/BorrowingResponse'
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Book or member not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /borrowings/return:
     post:
@@ -39,34 +44,88 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                memberCode:
-                  type: string
-                bookCode:
-                  type: string
+              $ref: '#/components/schemas/ReturnRequest'
       responses:
         '200':
           description: Book returned successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Borrowing'
+                $ref: '#/components/schemas/ReturnResponse'
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Book or member not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
-    Borrowing:
+    BorrowRequest:
       type: object
       properties:
         memberCode:
           type: string
         bookCode:
           type: string
-        borrowDate:
+
+    ReturnRequest:
+      type: object
+      properties:
+        memberCode:
           type: string
-          format: date-time
-        returnDate:
+        bookCode:
           type: string
-          format: date-time
+
+    BorrowingResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            memberCode:
+              type: string
+            bookCode:
+              type: string
+            borrowedDate:
+              type: string
+              format: date-time
+
+    ReturnResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            memberCode:
+              type: string
+            bookCode:
+              type: string
+            borrowedDate:
+              type: string
+              format: date-time
+            returnedDate:
+              type: string
+              format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string

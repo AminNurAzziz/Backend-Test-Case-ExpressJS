@@ -6,21 +6,20 @@ paths:
   /books:
     get:
       summary: Retrieve all books
-      tags:    
-        - Books  
+      tags:
+        - Books
       responses:
         '200':
           description: A list of books
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/BookList'
+
     post:
       summary: Create a new book
-      tags:    
-        - Books  
+      tags:
+        - Books
       requestBody:
         required: true
         content:
@@ -29,24 +28,28 @@ paths:
               $ref: '#/components/schemas/NewBook'
       responses:
         '201':
-          description: Created
+          description: Book created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /books/{id}:
+  /books/{code}:
     get:
-      summary: Retrieve a specific book by ID
-      tags:    
-        - Books  
+      summary: Retrieve a specific book by CODE
+      tags:
+        - Books
       parameters:
         - in: path
-          name: id
+          name: code
           required: true
-          description: ID of the book to retrieve
+          description: CODE of the book to retrieve
           schema:
             type: string
       responses:
@@ -55,19 +58,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/BookResponse'
         '404':
           description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
     put:
       summary: Update a book
-      tags:    
-        - Books  
+      tags:
+        - Books
       parameters:
         - in: path
-          name: id
+          name: code
           required: true
-          description: ID of the book to update
+          description: CODE of the book to update
           schema:
             type: string
       requestBody:
@@ -75,41 +82,59 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: '#/components/schemas/UpdateBook'
       responses:
         '200':
-          description: Updated successfully
+          description: Book updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
-        '404':
-          description: Book not found
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
     delete:
       summary: Delete a book
-      tags:    
-        - Books  
+      tags:
+        - Books
       parameters:
         - in: path
-          name: id
+          name: code
           required: true
-          description: ID of the book to delete
+          description: CODE of the book to delete
           schema:
             type: string
       responses:
-        '204':
+        '200':
           description: Book deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '404':
           description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
     Book:
       type: object
       properties:
+        code:
+          type: string
         title:
           type: string
         author:
@@ -117,7 +142,43 @@ components:
         stock:
           type: integer
           format: int32
+
+    BookList:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+
+    BookResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Book'
+
     NewBook:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        stock:
+          type: integer
+          format: int32
+
+    UpdateBook:
       type: object
       properties:
         title:
@@ -127,3 +188,20 @@ components:
         stock:
           type: integer
           format: int32
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        

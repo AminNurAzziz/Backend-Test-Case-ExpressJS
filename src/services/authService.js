@@ -3,32 +3,40 @@ const userRepository = require('../repositories/userRepository');
 const User = require('../models/User');
 
 class AuthService {
-    async register(userData) {
+    static async register(userData) {
         const { username, password } = userData;
-        const existingUser = await userRepository.findByUsername(username);
-        if (existingUser) {
-            throw new Error('Username already exists');
+        try {
+            const existingUser = await userRepository.findByUsername(username);
+            if (existingUser) {
+                throw new Error('Username already exists');
+            }
+            const user = new User({ username, password });
+            return await userRepository.save(user);
+        } catch (error) {
+            throw new Error(`Registration failed: ${error.message}`);
         }
-        const user = new User({ username, password });
-        return userRepository.save(user);
     }
 
-    async login(userData) {
+    static async login(userData) {
         const { username, password } = userData;
-        const user = await userRepository.findByUsername(username);
-        if (!user || !(await user.matchPassword(password))) {
-            throw new Error('Invalid username or password');
+        try {
+            const user = await userRepository.findByUsername(username);
+            if (!user || !(await user.matchPassword(password))) {
+                throw new Error('Invalid username or password');
+            }
+            return AuthService.generateToken(user._id);
+        } catch (error) {
+            throw new Error(`Login failed: ${error.message}`);
         }
-        return this.generateToken(user._id);
     }
 
-    generateToken(userId) {
+    static generateToken(userId) {
         return jwt.sign({ id: userId }, 'your_jwt_secret', { expiresIn: '30d' });
     }
 
-    verifyToken(token) {
+    static verifyToken(token) {
         return jwt.verify(token, 'your_jwt_secret');
     }
 }
 
-module.exports = new AuthService();
+module.exports = AuthService;

@@ -1,25 +1,25 @@
 const Book = require('../models/Book');
 
 class BookRepository {
-    async save(book) {
+    static async save(book) {
         return book.save();
     }
 
-    async findAvailable() {
+    static async findAvailable() {
         return Book.find({ stock: { $gt: 0 } });
     }
 
-    async findByCode(code) {
+    static async findByCode(code) {
         return Book.findOne({ code });
     }
 
-    async update(book) {
+    static async update(book) {
         return Book.findByIdAndUpdate(book._id, book, { new: true });
     }
 
-    async delete(id) {
+    static async delete(id) {
         return Book.findByIdAndDelete(id);
     }
 }
 
-module.exports = new BookRepository();
+module.exports = BookRepository;

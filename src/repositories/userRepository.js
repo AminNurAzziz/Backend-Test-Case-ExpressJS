@@ -1,13 +1,13 @@
 const User = require('../models/User');
 
 class UserRepository {
-    async save(user) {
+    static async save(user) {
         return user.save();
     }
 
-    async findByUsername(username) {
+    static async findByUsername(username) {
         return User.findOne({ username });
     }
 }
 
-module.exports = new UserRepository();
+module.exports = UserRepository;

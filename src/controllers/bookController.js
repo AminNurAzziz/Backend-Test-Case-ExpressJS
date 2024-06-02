@@ -1,50 +1,84 @@
 const bookService = require('../services/bookService');
+const CreateBookDTO = require('../dtos/createBookDTO');
+const UpdateBookDTO = require('../dtos/updateBookDTO');
 
 class BookController {
-    async createBook(req, res) {
+    static async createBook(req, res) {
         try {
-            const book = await bookService.createBook(req.body);
-            res.status(201).json(book);
+            const createBookDTO = new CreateBookDTO(req.body);
+            await bookService.createBook(createBookDTO);
+            console.log(`[INFO] BookController.createBook - Book created`);
+            res.status(201).json({ success: true, message: 'Book created successfully' });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error(`[ERROR] BookController.createBook - Error creating book:`, error);
+            res.status(400).json({ success: false, error: `Failed to create book: ${error.message}` });
         }
     }
 
-    async getAllBooks(req, res) {
+    static async getAllBooks(req, res) {
         try {
             const books = await bookService.getAllBooks();
-            res.status(200).json(books);
+            console.log(`[INFO] BookController.getAllBooks - All books retrieved`);
+            const formattedBooks = books.map(book => {
+                return {
+                    code: book.code,
+                    title: book.title,
+                    author: book.author,
+                    stock: book.stock
+                };
+            });
+            res.status(200).json({ success: true, message: 'All books retrieved successfully', data: formattedBooks });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error(`[ERROR] BookController.getAllBooks - Error getting all books:`, error);
+            res.status(500).json({ success: false, error: `Failed to retrieve books: ${error.message}` });
         }
     }
 
-    async getBook(req, res) {
+    static async getBook(req, res) {
         try {
             const book = await bookService.getBook(req.params.code);
-            res.status(200).json(book);
+            if (!book) {
+                console.log(`[INFO] BookController.getBook - Book not found for code:`, req.params.code);
+                return res.status(404).json({ success: false, error: `Book not found for code: ${req.params.code}` });
+            }
+            console.log(`[INFO] BookController.getBook - Book retrieved:`, book);
+            const formattedBook = {
+                code: book.code,
+                title: book.title,
+                author: book.author,
+                stock: book.stock
+            };
+
+            res.status(200).json({ success: true, message: 'Book retrieved successfully', data: formattedBook });
         } catch (error) {
-            res.status(404).json({ error: error.message });
+            console.error(`[ERROR] BookController.getBook - Error getting book:`, error);
+            res.status(500).json({ success: false, error: `Failed to retrieve book: ${error.message}` });
         }
     }
 
-    async updateBook(req, res) {
+    static async updateBook(req, res) {
         try {
-            const book = await bookService.updateBook(req.params.code, req.body);
-            res.status(200).json(book);
+            const updateBookDTO = new UpdateBookDTO(req.body);
+            console.log(`[INFO] BookController.updateBook - Updating book for code:`, req.params.code);
+            const book = await bookService.updateBook(req.params.code, updateBookDTO);
+            console.log(`[INFO] BookController.updateBook - Book updated`);
+            res.status(200).json({ success: true, message: 'Book updated successfully' });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error(`[ERROR] BookController.updateBook - Error updating book:`, error);
+            res.status(400).json({ success: false, error: `Failed to update book: ${error.message}` });
         }
     }
 
-    async deleteBook(req, res) {
+    static async deleteBook(req, res) {
         try {
             await bookService.deleteBook(req.params.code);
-            res.status(204).end();
+            console.log(`[INFO] BookController.deleteBook - Book deleted for code:`, req.params.code);
+            res.status(200).json({ success: true, message: 'Book deleted successfully' });
         } catch (error) {
-            res.status(404).json({ error: error.message });
+            console.error(`[ERROR] BookController.deleteBook - Error deleting book:`, error);
+            res.status(500).json({ success: false, error: `Failed to delete book: ${error.message}` });
         }
     }
 }
 
-module.exports = new BookController();
+module.exports = BookController;
