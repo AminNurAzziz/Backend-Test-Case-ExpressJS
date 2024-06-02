@@ -10,7 +10,6 @@ class UpdateBookDTO {
             throw new Error('Stock must be a non-negative number');
         }
 
-        // Update fields only if they are provided
         if (title !== undefined) {
             this.title = title;
         }

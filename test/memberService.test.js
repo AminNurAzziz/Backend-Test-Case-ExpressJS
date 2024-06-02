@@ -34,25 +34,20 @@ describe('MemberService', () => {
 
     describe('getAllMembers', () => {
         test('should return all members with active borrowings', async () => {
-            // Mock member objects that mimic Mongoose model instances
+
             const members = [
                 new Model({ _id: 'sampleId1', name: 'Ferry' }),
                 new Model({ _id: 'sampleId2', name: 'Putri' })
             ];
 
-            // Mock the response of memberRepository.findAll()
             memberRepository.findAll.mockResolvedValueOnce(members);
 
-            // Mock the response of borrowingRepository.findActiveByMemberId()
             borrowingRepository.findActiveByMemberId.mockResolvedValue([]);
 
-            // Call the method being tested
             const result = await MemberService.getAllMembers();
 
-            // Verify that memberRepository.findAll() is called
             expect(memberRepository.findAll).toHaveBeenCalled();
 
-            // Verify the returned result
             expect(result).toEqual([
                 { ...members[0].toObject(), activeBorrowings: [] },
                 { ...members[1].toObject(), activeBorrowings: [] }

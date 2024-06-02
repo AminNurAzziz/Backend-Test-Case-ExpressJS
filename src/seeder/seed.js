@@ -34,18 +34,15 @@ const seedData = async () => {
     ];
 
     try {
-        // Clear existing data
         await Member.deleteMany({});
         await Book.deleteMany({});
 
-        // Insert sample member data
         await Member.insertMany(members);
 
-        // Insert sample book data
         await Book.insertMany(books);
 
         console.log('Data seeding completed');
-        process.exit(0); // Exit the process after seeding
+        process.exit(0);
     } catch (error) {
         console.error('Error seeding data:', error.message);
         process.exit(1);

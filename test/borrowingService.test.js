@@ -23,7 +23,7 @@ jest.mock('../src/repositories/borrowingRepository', () => ({
     findActiveByBookCode: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
-    findActiveByMemberAndBook: jest.fn(), // Add this line
+    findActiveByMemberAndBook: jest.fn(),
 }));
 
 describe('borrowBook', () => {
@@ -52,7 +52,7 @@ describe('borrowBook', () => {
     });
 
     test('should throw an error when member has a penalty', async () => {
-        const mockMember = { _id: 'member-id', penaltyEndDate: new Date(Date.now() + 86400000) }; // Penalty ends tomorrow
+        const mockMember = { _id: 'member-id', penaltyEndDate: new Date(Date.now() + 86400000) };
         memberRepository.findByCode.mockResolvedValueOnce(mockMember);
         borrowingRepository.findActiveByMemberId.mockResolvedValueOnce([]);
 
