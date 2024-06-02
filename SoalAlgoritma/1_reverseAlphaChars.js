@@ -1,28 +1,28 @@
 function reverseAlphaChars(inputString) {
-    let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    alphabet += alphabet.toLowerCase();
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let reversedString = '';
 
-    let chars = inputString.split('');
-    let alphaIndices = chars.reduce((indices, char, i) => {
-        if (alphabet.includes(char)) indices.push(i);
-        return indices;
-    }, []);
-
-    let alphaChars = [];
-    for (let i = chars.length - 1; i >= 0; i--) {
-        if (alphabet.includes(chars[i])) {
-            alphaChars.push(chars[i]);
+    for (let i = inputString.length - 1; i >= 0; i--) {
+        if (alphabet.includes(inputString[i])) {
+            reversedString += inputString[i];
         }
     }
 
-    alphaIndices.forEach((index, i) => {
-        chars[index] = alphaChars[i];
-    });
+    let reversedIndex = 0;
+    let result = '';
+    for (let i = 0; i < inputString.length; i++) {
+        if (alphabet.includes(inputString[i])) {
+            result += reversedString[reversedIndex];
+            reversedIndex++;
+        } else {
+            result += inputString[i];
+        }
+    }
 
-    return chars.join('');
+    return result;
 }
 
-// Contoh penggunaan algoritma 1:
+// Contoh penggunaan algoritma 1
 let inputString = "NEGIE1";
 let outputString = reverseAlphaChars(inputString);
 console.log('input: ' + inputString); // NEGIE1
